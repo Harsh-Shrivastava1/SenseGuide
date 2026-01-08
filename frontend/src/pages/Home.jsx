@@ -1,10 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Type, Mic, Info, ShieldCheck, Heart, Sparkles, AlertCircle, Image } from 'lucide-react';
 import { useVoice } from '../context/VoiceContext';
 
 const Home = () => {
     const [showWhyModal, setShowWhyModal] = useState(false);
+    const [warmupMessage, setWarmupMessage] = useState("Warming up AI services… please wait a moment.");
+
+    useEffect(() => {
+        const timer1 = setTimeout(() => {
+            setWarmupMessage("SenseGuide is ready");
+        }, 10000);
+
+        const timer2 = setTimeout(() => {
+            setWarmupMessage("");
+        }, 13000);
+
+        return () => {
+            clearTimeout(timer1);
+            clearTimeout(timer2);
+        };
+    }, []);
     const { startListening, stopListening, isListening, speak } = useVoice();
     const [voiceStarted, setVoiceStarted] = useState(false);
 
@@ -58,6 +74,11 @@ const Home = () => {
                         <div className="text-[10px] text-gray-300 mt-2 font-mono">
                             Status: {isListening ? "Listening" : "Idle"} | VoiceMode: {String(voiceStarted)}
                         </div>
+                        {warmupMessage && (
+                            <div className="text-sm font-semibold text-center text-blue-600 dark:text-blue-400 mt-3 animate-pulse bg-blue-50 dark:bg-blue-900/20 px-4 py-1.5 rounded-full inline-block">
+                                {warmupMessage}
+                            </div>
+                        )}
                     </div>
 
                     {/* Voice Status Indicator */}
