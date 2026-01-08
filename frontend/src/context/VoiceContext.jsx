@@ -208,6 +208,16 @@ export const VoiceProvider = ({ children }) => {
         }
 
         const cmd = command.toLowerCase();
+
+        // FIX: Home-Specific "Benefit" Command (High Priority)
+        // usage of window.location.pathname avoids stale closure issues with react-router location
+        const currentPath = window.location.pathname;
+        const isHome = currentPath === '/' || currentPath === '/home';
+
+        if (isHome && (cmd.includes("benefit") || cmd.includes("how can you help me"))) {
+            speak("I can help you understand your surroundings using your camera and voice. I can describe scenes, identify objects, read printed text, and answer questions hands-free. SenseGuide is designed to support people with low vision with simple, voice-first assistance.");
+            return;
+        }
         if (cmd.includes("home")) { navigate('/'); return; }
         if (cmd.includes("scene")) { navigate('/scene'); return; }
         if (cmd.includes("object")) { navigate('/object'); return; }
